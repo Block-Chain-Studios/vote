@@ -108,10 +108,10 @@ function VoteWallet({voter, votes, computer, publicKey, rev}){
             <Card style={{margin:'6px', outlineColor:'#000', color: '#000', outlineWidth:'2px'}}>
                 <Grid container align='center' className={classes.paddedPaper}>
                     <Grid item xs={12}>
-                        <Typography variant="h4" control="p" ><MonetizationOnIcon fontSize='large' color='primary'/> {first.name}</Typography>
+                        <Typography variant="h4" control="p" ><MonetizationOnIcon fontSize='large' color='primary'/> {first ? first.name:'UNK'}</Typography>
                         {/* <Typography variant="h6" control="p">{balance} undistributed votes</Typography> */}
-                        <Typography variant="body1" control="p">{first._id}</Typography>
-                        <Button onClick={(e)=>{history.push('/elections/results/'+first._id)}} variant='contained' color='secondary'>View Results</Button>
+                        <Typography variant="body1" control="p">{first?first._id:'UNK'}</Typography>
+                        <Button onClick={(e)=>{history.push(`/elections/results/'${first?first._id:''}`)}} variant='contained' color='secondary'>View Results</Button>
                     </Grid>
                     <Grid item xs={12}>
                       
@@ -125,10 +125,10 @@ function VoteWallet({voter, votes, computer, publicKey, rev}){
                             <div> Cast Your Vote For: </div>
                             <Grid container> 
                               <Grid item xs={12} md={4}>
-                                <Button onClick={candidate1Click} > {first.can1name}</Button> 
+                                <Button onClick={candidate1Click} > {first?first.can1name:'UNK Candidate 1'}</Button> 
                               </Grid>
                               <Grid item xs={12} md={4}>
-                                <Button  onClick={candidate2Click}> {first.can2name} </Button>
+                                <Button  onClick={candidate2Click}> {first?first.can2name:'UNK Candidate 2'} </Button>
                               </Grid>
                               {/* <Grid item xs={12} md={4}>
                                 <Button  onClick={candidate3Click}> {first.can3name} </Button>
