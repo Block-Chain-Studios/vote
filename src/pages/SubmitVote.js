@@ -1,0 +1,80 @@
+import React, {useState, useEffect} from 'react'
+import * as Constants from './../constants/LocalStorageConstants.js'
+import {
+    useHistory
+  } from "react-router-dom";
+import Computer from 'bitcoin-computer'
+import VoteWallet from './../components/VoteWallet.js'
+
+export default function SubmitVote() {
+    let history = useHistory()
+    const [voterList, setVoterList] = useState([])
+    const [computer, setComputer] = useState(async () => {
+        const password = window.localStorage.getItem(Constants.SEED)
+        //setChain("BSV")
+        const chain = "BSV"
+        //const isLoggedIn = password
+        const computer = new Computer({ chain: chain, network: 'testnet', seed: password, path: Constants.ELECTION_PATH })
+        console.log(`Bitcoin|Computer created on ${chain}`)
+        const revs = await computer.getRevs(computer.db.wallet.getPublicKey().toString())
+        let objs = await Promise.all(revs.map(async rev =>  computer.sync(rev)))
+        console.log(objs)
+        return computer
+    })
+
+    const saveVoters = (voters) => {
+        setVoterList(voters)
+        localStorage.setItem(Constants.VOTERS,JSON.stringify(voters))
+    }
+
+    const getVoters = () => {
+        let voters = localStorage.getItem(Constants.VOTERS)
+        if (!voters) return []
+        if (voters.length === 0) return []
+        //console.log(voters)
+        try {
+            return JSON.parse(voters)
+        } catch (err) {
+            console.error(voters)
+            return []
+        }
+    }
+
+    const loginVoter = (key) => {
+        const voter = getVoters().find(v => v.key.public === key)
+        // login as them
+        console.log(voter)
+        localStorage.setItem(Constants.SEED, voter.seed)
+        history.push('/elections/results')
+    }
+
+    const renderVoters = () => {
+        return getVoters().map(v => {
+            const key = v.key.public
+            //<li key={`${key}`}>{`${v.name} (${v.key.public})`} <button onClick={() => loginVoter(key)}>Login</button></li>
+            return (
+                <VoteWallet key={`${key}`} votes={[v]} computer={computer} publicKey={`ShouldBePKofElection`} />
+            )
+        })
+    }
+
+    
+    let nameInput = React.createRef()
+    return (
+        <>
+        <div className="container">
+        <div className="row">
+            <div className="col">
+            <h3>Submit Ballots</h3>
+            </div>
+        </div>
+        <div>
+            <div>{getVoters().length} Voters</div>
+            <div>
+            {renderVoters()}
+            </div>
+        </div>
+       </div>
+        </>
+    )
+}
