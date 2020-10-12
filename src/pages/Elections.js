@@ -100,7 +100,7 @@ function Elections({_objects})
             <Grid item md={8}>
               <Grid container>
                 {objects && Object.values(groupByRoot(objects)).map((o) => 
-                <VoteWallet key={o[0]._id} voter={getFirstVoter()} votes={o} computer={computer} publicKey={publicKey} />
+                <VoteWallet key={o[0]._id} option="distribute" voter={getFirstVoter()} votes={o} computer={computer} publicKey={publicKey} />
                 )}
               </Grid>
             </Grid>

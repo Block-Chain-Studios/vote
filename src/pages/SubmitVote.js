@@ -3,14 +3,16 @@ import * as Constants from './../constants/LocalStorageConstants.js'
 import {
     useHistory
   } from "react-router-dom"
-  import { Avatar, Box, Button, Grid, Card, CardActions, Link, TextField, Typography, Container, CssBaseline } from '@material-ui/core'
-  import Computer from 'bitcoin-computer'
+import { Avatar, Box, Button, Grid, Card, CardActions, Link, TextField, Typography, Container, CssBaseline } from '@material-ui/core'
+import Computer from 'bitcoin-computer'
 import VoteWallet from './../components/VoteWallet.js'
 
 export default function SubmitVote() {
     let history = useHistory()
     const [voterList, setVoterList] = useState([])
     const [votes, setVotes] = useState(null)
+    const [publicKey, setPublicKey] = useState('')
+    // computer object for the election
     const [computer, setComputer] = useState(async () => {
         const password = window.localStorage.getItem(Constants.SEED)
         //setChain("BSV")
@@ -18,7 +20,11 @@ export default function SubmitVote() {
         //const isLoggedIn = password
         const computer = new Computer({ chain: chain, network: 'testnet', seed: password, path: Constants.ELECTION_PATH })
         console.log(`Bitcoin|Computer created on ${chain}`)
-        const revs = await computer.getRevs(computer.db.wallet.getPublicKey().toString())
+        const pubKey = computer.db.wallet.getPublicKey().toString()
+        setPublicKey(pubKey)
+        console.log(pubKey)
+        const revs = await computer.getRevs(pubKey)
+        console.log(revs)
         let objs = await Promise.all(revs.map(async rev =>  computer.sync(rev)))
         setVotes(objs)
         console.log(objs)
@@ -43,26 +49,25 @@ export default function SubmitVote() {
         }
     }
 
-    const loginVoter = (key) => {
-        const voter = getVoters().find(v => v.key.public === key)
-        // login as them
-        console.log(voter)
-        localStorage.setItem(Constants.SEED, voter.seed)
-        history.push('/elections/results')
-    }
+    // const loginVoter = (key) => {
+    //     const voter = getVoters().find(v => v.key.public === key)
+    //     // login as them
+    //     console.log(voter)
+    //     localStorage.setItem(Constants.SEED, voter.seed)
+    //     history.push('/elections/results')
+    // }
 
     const renderVoters = () => {
         return getVoters().map(v => {
             const key = v.key.public
+            console.log(v)
             //<li key={`${key}`}>{`${v.name} (${v.key.public})`} <button onClick={() => loginVoter(key)}>Login</button></li>
             return (
-                <VoteWallet key={`${key}`} voter={v} votes={votes} computer={computer} publicKey={`ShouldBePKofElection`} />
+                <VoteWallet key={`${key}`} option="vote" voter={v} votes={votes} computer={computer} publicKey={publicKey} />
             )
         })
     }
 
-    
-    let nameInput = React.createRef()
     return (
         <Container component="main"  >
         <div className="container">

@@ -5,6 +5,8 @@ import {Button, Card, CardContent, CardActions, Grid, Typography} from '@materia
 import SendVote from './../components/SendVote.js'
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { makeStyles } from '@material-ui/core/styles';
+import Computer from 'bitcoin-computer'
+
 const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
@@ -40,11 +42,29 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-function VoteWallet({voter, votes, computer, publicKey, rev}){
-    const [first] = votes || [{name:"invalid"}]
-    // const balance = votes.reduce((acc, token) => acc + parseInt(token.votes, 10), 0)
-    // const [distribute, setDistribute] = useState(false)
-    const [vote, setVote] = useState(null)
+  // this will sync the vote
+function VoteWallet({option, voter, votes, computer, publicKey, rev}){
+    // first is the vote contract object! for election?
+    const [election] = votes || [{name:"invalid"}]
+    const [votePublicKey, setVotePublicKey] = useState('')
+    const [voteObjs, setVoteObjs] = useState(null)
+    // computer object for the voter
+    const [computerVoter, setComputerVoter] = useState(async () => {
+      if (option == 'distribute') return null
+      const password = voter.seed
+      const chain = "BSV"
+      const vcomputer = new Computer({ chain: chain, network: 'testnet', seed: password, path: Constants.ELECTION_PATH })
+      console.log(`Bitcoin|Computer created on ${chain}`)
+      const pubKey = vcomputer.db.wallet.getPublicKey().toString()
+      setVotePublicKey(pubKey)
+      console.log(pubKey)
+      const revs = await vcomputer.getRevs(pubKey)
+      console.log(revs)
+      let objs = await Promise.all(revs.map(async rev =>  vcomputer.sync(rev)))
+      setVoteObjs(objs)
+      console.log(objs)
+      return vcomputer
+  })
 
     let classes = useStyles()
     // useEffect(()=>{
@@ -62,15 +82,21 @@ function VoteWallet({voter, votes, computer, publicKey, rev}){
     // }, [votes, publicKey, rev, computer])
 
     useEffect(()=>{
+      // console.log(option)
+      console.log(election)
       console.log(voter)
-      if (votes && votes.length>0) console.log(votes[0].distributor + " " + publicKey + " " + votes[0].cand1PK)
+      console.log(voteObjs)
+      // if (votes && votes.length>0) {
+      //   console.log(votes)
+      //   console.log(election.distributor)
+      //   console.log(election.cand1PK)
+      // }
     })
 
     const getVoters = () => {
       let voters = localStorage.getItem(Constants.VOTERS)
       if (!voters) return []
       if (voters.length === 0) return []
-      //console.log(voters)
       try {
           return JSON.parse(voters)
       } catch (err) {
@@ -85,16 +111,26 @@ function VoteWallet({voter, votes, computer, publicKey, rev}){
       return voters[0]
     }
 
+    const findVoteInThisElection = () => {
+      if (voteObjs === null) {
+        console.log(`no votes available`)
+        return null
+      }
+      const find = voteObjs.filter(v => v._id === election._id)
+      if (find.length === 0) return null
+      return find[0]
+    }
+
     const candidate1Click = async (e) =>{
       try{
-        let tx = await first.voteA(publicKey)
+        let tx = await voteObjs[0].voteA(publicKey)
         console.log(tx)
       }catch(err){alert(err)}
     }
 
     const candidate2Click = async (e) =>{
       try{
-        let tx = await first.voteB(publicKey)
+        let tx = await voteObjs[0].voteB(publicKey)
         console.log(tx)
       }catch(err){alert(err)}
   }
@@ -105,20 +141,33 @@ function VoteWallet({voter, votes, computer, publicKey, rev}){
     // }
 
    const history = useHistory()
+   //votes && votes.length>0 && votes[0].distributor === publicKey
     return(
         <Grid item xs={12}  className={classes.paddedPaper}>
             <Card style={{margin:'6px', outlineColor:'#000', color: '#000', outlineWidth:'2px'}}>
                 <Grid container align='center' className={classes.paddedPaper}>
                     <Grid item xs={12}>
-                        <Typography variant="h4" control="p" ><MonetizationOnIcon fontSize='large' color='primary'/> {first ? first.name:'UNK'}</Typography>
-                        {/* <Typography variant="h6" control="p">{balance} undistributed votes</Typography> */}
-                        <Typography variant="body1" control="p">{first?first._id:'UNK'}</Typography>
-                        <Button onClick={(e)=>{history.push(`/elections/results/${first?first._id:''}`)}} variant='contained' color='secondary'>View Results</Button>
+                        <Typography variant="h4" control="p" ><MonetizationOnIcon fontSize='large' color='primary'/> {election ? election.name:'UNK'}</Typography>
+                        {(option && option === 'distribute') ?
+                          (<>
+                          <Typography variant="h6" control="p">{election?election.votes:'?'} undistributed votes</Typography>
+                          <Typography variant="body1" control="p">{election?election._id:'UNKNOWN ELECTION'}</Typography>
+                          </>
+                          )
+                          :(<>
+                          <Typography variant="body1" control="p">{voter.name}</Typography>
+                          <Typography variant="h6" control="p">{findVoteInThisElection() ?findVoteInThisElection().votes:'UNK'} uncast votes</Typography>
+                          <Typography variant="body1" control="p">{findVoteInThisElection()?findVoteInThisElection()._id:'UNK'}</Typography>
+                          </>
+                          )
+                        }
+                        <Button onClick={(e)=>{history.push(`/elections/results/${election?election._id:''}`)}} variant='contained' color='secondary'>View Results</Button>
                     </Grid>
                     <Grid item xs={12}>
                       
-                      {(votes && votes.length>0 && votes[0].distributor === publicKey) 
-                        ? ( 
+                      {(option && option === 'distribute') 
+                        ? election.votes === 0 ? (<div></div>) :
+                          ( 
                           <div className={classes.paddedPaper}>
                             <SendVote votes={votes} computer={computer} voter={getFirstVoter()} />
                           </div>
@@ -127,10 +176,10 @@ function VoteWallet({voter, votes, computer, publicKey, rev}){
                             <div> Cast Your Vote For: </div>
                             <Grid container> 
                               <Grid item xs={12} md={4}>
-                                <Button onClick={candidate1Click} > {first?first.can1name:'UNK Candidate 1'}</Button> 
+                                <Button onClick={candidate1Click} > {election?election.can1name:'UNK Candidate 1'}</Button> 
                               </Grid>
                               <Grid item xs={12} md={4}>
-                                <Button  onClick={candidate2Click}> {first?first.can2name:'UNK Candidate 2'} </Button>
+                                <Button  onClick={candidate2Click}> {election?election.can2name:'UNK Candidate 2'} </Button>
                               </Grid>
                               {/* <Grid item xs={12} md={4}>
                                 <Button  onClick={candidate3Click}> {first.can3name} </Button>

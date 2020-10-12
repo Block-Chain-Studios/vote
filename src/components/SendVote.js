@@ -34,17 +34,18 @@ function SendVote({ computer, votes, voter }) {
   const [amount, setAmount] = useState(1)
   const [vote] = useState(votes[0])
   //voter to send to
-  const [to, setTo] = useState(voter ? voter.key.public:null)
+  const [to, setTo] = useState(null)
 
   useEffect(()=>{
+    setTo(voter?voter.key.public:null)
     console.log(voter)
     if (votes && votes.length>0) console.log(votes[0].distributor + " " + votes[0].cand1PK)
   })
 
   const send = async (e) => {
         e.preventDefault()
-        console.log(to)
-        console.log(vote._owners + "   " + vote.distributor)
+        console.log(`distribute to ${to}`)
+        console.log(vote._owners + " " + vote.distributor)
         if (to) {
           let tx = await vote.distribute(to)
           // update local storage
@@ -52,7 +53,7 @@ function SendVote({ computer, votes, voter }) {
           const voterUpdate = voters.find(v => v != null && v.name===voter.name)
           voterUpdate.votetx = tx
           saveVoters(voters)
-          console.log('Sent vote to\n ' + to + '\n ' + tx.toString())
+          console.log(`Sent vote to \n${to} \n${JSON.stringify(tx)}`)
         }
     }
 
