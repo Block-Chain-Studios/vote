@@ -10,6 +10,7 @@ import VoteWallet from './../components/VoteWallet.js'
 export default function SubmitVote() {
     let history = useHistory()
     const [voterList, setVoterList] = useState([])
+    const [votes, setVotes] = useState(null)
     const [computer, setComputer] = useState(async () => {
         const password = window.localStorage.getItem(Constants.SEED)
         //setChain("BSV")
@@ -19,6 +20,7 @@ export default function SubmitVote() {
         console.log(`Bitcoin|Computer created on ${chain}`)
         const revs = await computer.getRevs(computer.db.wallet.getPublicKey().toString())
         let objs = await Promise.all(revs.map(async rev =>  computer.sync(rev)))
+        setVotes(objs)
         console.log(objs)
         return computer
     })
@@ -54,7 +56,7 @@ export default function SubmitVote() {
             const key = v.key.public
             //<li key={`${key}`}>{`${v.name} (${v.key.public})`} <button onClick={() => loginVoter(key)}>Login</button></li>
             return (
-                <VoteWallet key={`${key}`} votes={[v]} computer={computer} publicKey={`ShouldBePKofElection`} />
+                <VoteWallet key={`${key}`} voter={v} votes={votes} computer={computer} publicKey={`ShouldBePKofElection`} />
             )
         })
     }

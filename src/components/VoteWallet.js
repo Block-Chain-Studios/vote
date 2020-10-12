@@ -40,10 +40,10 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-function VoteWallet({votes, computer, publicKey, rev}){
-    const [first] = votes
-    const balance = votes.reduce((acc, token) => acc + parseInt(token.votes, 10), 0)
-    const [distribute, setDistribute] = useState(false)
+function VoteWallet({voter, votes, computer, publicKey, rev}){
+    const [first] = votes || [{name:"invalid"}]
+    // const balance = votes.reduce((acc, token) => acc + parseInt(token.votes, 10), 0)
+    // const [distribute, setDistribute] = useState(false)
     const [vote, setVote] = useState(null)
 
     let classes = useStyles()
@@ -62,7 +62,8 @@ function VoteWallet({votes, computer, publicKey, rev}){
     // }, [votes, publicKey, rev, computer])
 
     useEffect(()=>{
-      console.log(votes[0].distributor + " " + publicKey + " " + votes[0].cand1PK)
+      console.log(voter)
+      if (votes && votes.length>0) console.log(votes[0].distributor + " " + publicKey + " " + votes[0].cand1PK)
     })
 
     const getVoters = () => {
@@ -108,13 +109,13 @@ function VoteWallet({votes, computer, publicKey, rev}){
                 <Grid container align='center' className={classes.paddedPaper}>
                     <Grid item xs={12}>
                         <Typography variant="h4" control="p" ><MonetizationOnIcon fontSize='large' color='primary'/> {first.name}</Typography>
-                        <Typography variant="h6" control="p">{balance} undistributed votes</Typography>
+                        {/* <Typography variant="h6" control="p">{balance} undistributed votes</Typography> */}
                         <Typography variant="body1" control="p">{first._id}</Typography>
                         <Button onClick={(e)=>{history.push('/elections/results/'+first._id)}} variant='contained' color='secondary'>View Results</Button>
                     </Grid>
                     <Grid item xs={12}>
                       
-                      {(votes[0].distributor === publicKey) 
+                      {(votes && votes.length>0 && votes[0].distributor === publicKey) 
                         ? ( 
                           <div className={classes.paddedPaper}>
                             <SendVote votes={votes} computer={computer} voter={getFirstVoter()} />
