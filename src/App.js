@@ -122,10 +122,10 @@ export default function App() {
               color="default" href="/send-satoshis" className={classes.link}>
               Send Satoshis
             </Button>
-            <Button variant="contained" 
+            {/* <Button variant="contained" 
               color="default" href="/tokens" className={classes.link} target="_blank">
               Coins &amp; Wallets
-            </Button>
+            </Button> */}
            
              <VoteMenu classes={classes}  />
             

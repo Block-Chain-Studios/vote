@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import * as Constants from './../constants/LocalStorageConstants.js'
 import Computer from 'bitcoin-computer'
 import Mnemonic from 'bsv/mnemonic'
+import { Avatar, Box, Button, Grid, Card, CardActions, Link, TextField, Typography, Container, CssBaseline } from '@material-ui/core'
 
 export default function ElectionVoters() {
     const [voterList, setVoterList] = useState([])
@@ -70,7 +71,7 @@ export default function ElectionVoters() {
         return getVoters().map(v => {
             const key = v.key.public
             return (
-            <li key={`${key}`}>{`${v.name} (${v.key.public})`} <button onClick={() => deleteVoter(key)}>Delete</button></li>
+            <li key={`${key}`}>{`${v.name} (${v.key.public})`} <Button onClick={() => deleteVoter(key)}>Delete</Button></li>
             )
         })
     }
@@ -92,33 +93,34 @@ export default function ElectionVoters() {
 
     let nameInput = React.createRef()
     return (
-        <>
-        <div className="container">
-        <div className="row">
-            <div className="col">
+        <Container component="main"  >
+        <Grid container>
+            <Grid item xs={1}>
             <h3>Voter List</h3>
-            </div>
-            <div className="col">
-                <button className="button" onClick={() => addVoterRandom()}>Add Random Voter</button>
-            </div>
-        </div>
-        <div>Name:<input ref={nameInput}
+            </Grid>
+                <Grid item xs={11}>
+                <Button onClick={() => addVoterRandom()}>Add Random Voter</Button>
+                </Grid>
+
+        <Grid item xs={3}>
+            Name:<input ref={nameInput}
             placeholder="Voter name"
             ></input>
-        </div>
-        <div>
-            <button onClick={() => addVoter()}>Add Voter</button>
-        </div>
-        <div>
-            <div>{getVoters().length} Voters</div>
+        </Grid>
+        <Grid item xs={9}>
+            <Button onClick={() => addVoter()}>Add Voter</Button>
+        </Grid>
+
+        <Grid item xs={12}>
+            <Grid>{getVoters().length} Voters</Grid>
             <div>
             {renderVoters()}
             </div>
-        </div>
-        <div>
-            <button onClick={clearVoters}>Clear List</button>
-        </div>
-       </div>
-        </>
+        </Grid>
+        <Grid item xs={12}>
+            <Button onClick={clearVoters}>Clear List</Button>
+        </Grid>
+        </Grid>
+       </Container>
     )
 }

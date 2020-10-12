@@ -2,8 +2,9 @@ import React, {useState, useEffect} from 'react'
 import * as Constants from './../constants/LocalStorageConstants.js'
 import {
     useHistory
-  } from "react-router-dom";
-import Computer from 'bitcoin-computer'
+  } from "react-router-dom"
+  import { Avatar, Box, Button, Grid, Card, CardActions, Link, TextField, Typography, Container, CssBaseline } from '@material-ui/core'
+  import Computer from 'bitcoin-computer'
 import VoteWallet from './../components/VoteWallet.js'
 
 export default function SubmitVote() {
@@ -61,7 +62,7 @@ export default function SubmitVote() {
     
     let nameInput = React.createRef()
     return (
-        <>
+        <Container component="main"  >
         <div className="container">
         <div className="row">
             <div className="col">
@@ -75,6 +76,6 @@ export default function SubmitVote() {
             </div>
         </div>
        </div>
-        </>
+       </Container>
     )
 }
