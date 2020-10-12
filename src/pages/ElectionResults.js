@@ -82,14 +82,15 @@ function Elections({_objects})
           let b = await computer.db.wallet.getBalance()
           setBalance(b)
           console.log('async initializing the  default computer')
+          console.log(id)
           const rev = await computer.getLatestRev(id)
-          console.log("latest rev:" + rev)
+          console.log(`latest rev: ${rev}`)
           let election = await computer.sync(rev)
           const _electionName = election.name
           console.log('Election: ' +  _electionName)
           setElectionName(_electionName)
 
-          if(election){
+          if (election) {
             //Candidate 1 
             const _can1revs = await computer.getRevs(election.cand1PK)
             console.log(_can1revs)

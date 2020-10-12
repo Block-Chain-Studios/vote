@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import {Button, TextField} from '@material-ui/core'
 import * as Constants from './../constants/LocalStorageConstants.js'
@@ -36,12 +36,17 @@ function SendVote({ computer, votes, voter }) {
   //voter to send to
   const [to, setTo] = useState(voter ? voter.key.public:null)
 
+  useEffect(()=>{
+    console.log(voter)
+    if (votes && votes.length>0) console.log(votes[0].distributor + " " + votes[0].cand1PK)
+  })
+
   const send = async (e) => {
         e.preventDefault()
         console.log(to)
         console.log(vote._owners + "   " + vote.distributor)
         if (to) {
-        let tx = await vote.distribute(to)
+          let tx = await vote.distribute(to)
           // update local storage
           const voters = getVoters()
           const voterUpdate = voters.find(v => v != null && v.name===voter.name)

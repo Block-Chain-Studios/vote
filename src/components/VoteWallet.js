@@ -93,9 +93,11 @@ function VoteWallet({voter, votes, computer, publicKey, rev}){
     }
 
     const candidate2Click = async (e) =>{
-      let tx = await first.voteB(publicKey)
-      console.log(tx)
-    }
+      try{
+        let tx = await first.voteB(publicKey)
+        console.log(tx)
+      }catch(err){alert(err)}
+  }
 
     // const candidate3Click = async (e) =>{
     //   let tx = await first.voteC(publicKey)
@@ -111,7 +113,7 @@ function VoteWallet({voter, votes, computer, publicKey, rev}){
                         <Typography variant="h4" control="p" ><MonetizationOnIcon fontSize='large' color='primary'/> {first ? first.name:'UNK'}</Typography>
                         {/* <Typography variant="h6" control="p">{balance} undistributed votes</Typography> */}
                         <Typography variant="body1" control="p">{first?first._id:'UNK'}</Typography>
-                        <Button onClick={(e)=>{history.push(`/elections/results/'${first?first._id:''}`)}} variant='contained' color='secondary'>View Results</Button>
+                        <Button onClick={(e)=>{history.push(`/elections/results/${first?first._id:''}`)}} variant='contained' color='secondary'>View Results</Button>
                     </Grid>
                     <Grid item xs={12}>
                       

@@ -39,9 +39,9 @@ function Elections({_objects})
           let b = await computer.db.wallet.getBalance()
           setBalance(b)
           console.log('async initializing the  default computer')
-          setPublicKey(await computer.db.wallet.getPublicKey().toString())
-
-          const revs = await computer.getRevs(computer.db.wallet.getPublicKey().toString())
+          setPublicKey(computer.db.wallet.getPublicKey().toString())
+          console.log(publicKey)
+          const revs = await computer.getRevs(publicKey)
           console.log(revs)
           let objs = await Promise.all(revs.map(async rev =>  computer.sync(rev)))
           console.log(objs)
@@ -59,6 +59,37 @@ function Elections({_objects})
       {}
     )
 
+    const getVoters = () => {
+      let voters = localStorage.getItem(Constants.VOTERS)
+      if (!voters) return []
+      if (voters.length === 0) return []
+      //console.log(voters)
+      try {
+          return JSON.parse(voters)
+      } catch (err) {
+          console.error(voters)
+          return []
+      }
+  }
+
+  const getFirstVoter = () => {
+    const voters = getVoters().filter(v => v.votetx === undefined)
+    if (voters.length === 0) return null
+    return voters[0]
+  }
+
+  const resetVoting = () => {
+    const voters = getVoters()
+    for( let i = 0; i < voters.length; i++) {
+      delete voters[i].votetx 
+    }
+    saveVoters(voters)
+  }
+  
+  const saveVoters = (voters) => {
+    localStorage.setItem(Constants.VOTERS,JSON.stringify(voters))
+  }
+
     return (
         <div>
           <AddressDetails computer={computer} balance={balance} address={address} publicKey={publicKey} />
@@ -69,11 +100,12 @@ function Elections({_objects})
             <Grid item md={8}>
               <Grid container>
                 {objects && Object.values(groupByRoot(objects)).map((o) => 
-                <VoteWallet key={o[0]._id} votes={o} computer={computer} publicKey={publicKey} />
+                <VoteWallet key={o[0]._id} voter={getFirstVoter()} votes={o} computer={computer} publicKey={publicKey} />
                 )}
               </Grid>
             </Grid>
           </Grid>
+          <Button onClick={() => resetVoting()}>Reset Voting</Button>
         </div>
     )
   }
