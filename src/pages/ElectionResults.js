@@ -68,7 +68,7 @@ function Elections({_objects})
       // if you are currently logging in
       if (isLoggedIn && !computer){
         setComputer(new Computer({ chain: "BSV", network: 'testnet', seed: password, path: Constants.ELECTION_PATH }))
-        console.log("Bitcoin Computer created on " + chain)
+        console.log("Bitcoin|Computer created on " + chain)
       // if you are currently logging out
       } else if (!isLoggedIn && computer){
         console.log("You have been logged out")

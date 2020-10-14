@@ -36,15 +36,16 @@ class Vote {
                       )
     }
   
-    voteA(publicKey) {
+    voteA() {
+      console.log()
       this._owners = [this.cand1PK]
     }
   
-    voteB(publicKey) {
+    voteB() {
       this._owners = [this.cand2PK]
     }
   
-    // voteC(publicKey) {
+    // voteC() {
     //   this._owners = [this.cand3PK]
     // }
   }   

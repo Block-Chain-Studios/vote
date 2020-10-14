@@ -13,6 +13,9 @@ const useStyles = makeStyles({
   root: {
     maxWidth: 345,
   },
+  media: {           // this is the`className` passed to `CardMedia` later
+  height: 280,     // as an example I am modifying width and height
+  }
 });
 
 export default function HomeCard({image_url, title,  headText, description, link_path, linkText, alt}) {
@@ -24,7 +27,7 @@ export default function HomeCard({image_url, title,  headText, description, link
   return (
     <Card className={classes.root}>
       <CardActionArea>
-        <CardMedia
+        <CardMedia className={classes.media}
           component="img"
           alt={alt}
           image={image_url}

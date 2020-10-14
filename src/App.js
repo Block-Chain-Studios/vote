@@ -20,6 +20,7 @@ import SubmitVote from "./pages/SubmitVote.js"
 import Login from './pages/Login'
 import { makeStyles } from '@material-ui/core/styles';
 import {AppBar, Button, Toolbar, Typography} from '@material-ui/core'
+import TestComputer from './pages/Test'
 
 export default function App() {
   const [logged_in, setLoggedIn] = useState(false)
@@ -144,6 +145,9 @@ export default function App() {
       </AppBar>
 
         <Switch>
+          <Route path="/test">
+            <TestComputer></TestComputer>
+          </Route>
           <Route path="/about">
             <About setLoggedIn={setLoggedIn}/>
           </Route>

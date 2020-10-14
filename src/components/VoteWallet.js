@@ -40,31 +40,17 @@ const useStyles = makeStyles((theme) => ({
     submit: {
       margin: theme.spacing(3, 0, 2),
     }
-  }));
+  }))
 
-  // this will sync the vote
+// option = distribute, when election official distributes votes
+// option = vote, when voter votes
 function VoteWallet({option, voter, votes, computer, publicKey, rev}){
     // first is the vote contract object! for election?
     const [election] = votes || [{name:"invalid"}]
     const [votePublicKey, setVotePublicKey] = useState('')
     const [voteObjs, setVoteObjs] = useState(null)
     // computer object for the voter
-    const [computerVoter, setComputerVoter] = useState(async () => {
-      if (option == 'distribute') return null
-      const password = voter.seed
-      const chain = "BSV"
-      const vcomputer = new Computer({ chain: chain, network: 'testnet', seed: password, path: Constants.ELECTION_PATH })
-      console.log(`Bitcoin|Computer created on ${chain}`)
-      const pubKey = vcomputer.db.wallet.getPublicKey().toString()
-      setVotePublicKey(pubKey)
-      console.log(pubKey)
-      const revs = await vcomputer.getRevs(pubKey)
-      console.log(revs)
-      let objs = await Promise.all(revs.map(async rev =>  vcomputer.sync(rev)))
-      setVoteObjs(objs)
-      console.log(objs)
-      return vcomputer
-  })
+    // const [computerVoter, setComputerVoter] = useState(null)
 
     let classes = useStyles()
     // useEffect(()=>{
@@ -81,11 +67,30 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
     //   setUp()
     // }, [votes, publicKey, rev, computer])
 
+    const loadVoterComputer = async () => {
+        if (option == 'distribute') return null
+        const password = voter.seed
+        const chain = "BSV"
+        const vcomputer = new Computer({ chain: chain, network: 'testnet', seed: password, path: Constants.ELECTION_PATH })
+        console.log(`Bitcoin|Computer created on ${chain}`)
+        const pubKey = vcomputer.db.wallet.getPublicKey().toString()
+        setVotePublicKey(pubKey)
+        console.log(pubKey)
+        const revs = await vcomputer.getRevs(pubKey)
+        console.log(revs)
+        let objs = await Promise.all(revs.map(async rev =>  vcomputer.sync(rev)))
+        setVoteObjs(objs)
+        console.log(objs)
+        // setComputerVoter(vcomputer)
+        return vcomputer
+    }
+
     useEffect(()=>{
+      //loadVoterComputer()
       // console.log(option)
       console.log(election)
       console.log(voter)
-      console.log(voteObjs)
+      // console.log(voteObjs)
       // if (votes && votes.length>0) {
       //   console.log(votes)
       //   console.log(election.distributor)
@@ -116,19 +121,42 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
         console.log(`no votes available`)
         return null
       }
+      console.log(voteObjs)
       const find = voteObjs.filter(v => v._id === election._id)
       if (find.length === 0) return null
       return find[0]
     }
 
     const candidate1Click = async (e) =>{
+      const password = voter.seed
+      const chain = "BSV"
+      const vcomputer = new Computer({ chain: chain, network: 'testnet', seed: password, path: Constants.ELECTION_PATH })
+      console.log(`Bitcoin|Computer created on ${chain}`)
+      const pubKey = vcomputer.db.wallet.getPublicKey().toString()
+      setVotePublicKey(pubKey)
+      console.log(pubKey)
+      //const revs = await vcomputer.getRevs(pubKey)
+      //console.log(revs)
+      // let objs = await Promise.all(revs.map(async rev =>  vcomputer.sync(rev)))
+      // if (!objs || objs.length == 0) {
+      //   alert(`No vote object exists`)
+      //   return
+      // }
+      let currentVote = await vcomputer.sync(voter.votetx._rev)
+      console.log(currentVote)
       try{
-        let tx = await voteObjs[0].voteA(publicKey)
+        //await objs[0].voteA(publicKey)
+        let tx = currentVote.voteA(election.cand1PK)
         console.log(tx)
+        //TODO: save to localStorage
       }catch(err){alert(err)}
     }
 
     const candidate2Click = async (e) =>{
+      if (!voteObjs) {
+        alert(`No vote object exists`)
+        return
+      }
       try{
         let tx = await voteObjs[0].voteB(publicKey)
         console.log(tx)
@@ -164,7 +192,6 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
                         <Button onClick={(e)=>{history.push(`/elections/results/${election?election._id:''}`)}} variant='contained' color='secondary'>View Results</Button>
                     </Grid>
                     <Grid item xs={12}>
-                      
                       {(option && option === 'distribute') 
                         ? election.votes === 0 ? (<div></div>) :
                           ( 
