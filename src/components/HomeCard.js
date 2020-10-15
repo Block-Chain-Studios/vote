@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {useHistory} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -19,14 +19,16 @@ const useStyles = makeStyles({
 });
 
 export default function HomeCard({image_url, title,  headText, description, link_path, linkText, alt}) {
-  const classes = useStyles();
-  const history = useHistory();
+  const classes = useStyles()
+  const history = useHistory()
   const handleClick = () => {
+    console.log(link_path)
     history.push(link_path)
 }
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea
+      onClick={() => handleClick()}>
         <CardMedia className={classes.media}
           component="img"
           alt={alt}
@@ -43,10 +45,11 @@ export default function HomeCard({image_url, title,  headText, description, link
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary" onClick={handleClick}>
+        <Button size="small" color="primary" 
+        onClick={() => handleClick()}>
         {linkText}
         </Button>
       </CardActions>
     </Card>
-  );
+  )
 }

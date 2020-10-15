@@ -22,16 +22,19 @@ export default function Home() {
               <Grid container style={{paddingTop: "50px", paddingBottom: "100px", backgroundColor:"#000", color:"#fff"}} >
               <Grid item md={6} xs={12}  align='center'>
                 <div>
-                  <h1 align='center'> <span className="script big-head" > Wyoming Vote </span> <br />on Bitcoin.</h1>
+                  <h1 align='center'> <span className="script big-head" > Wyoming Vote </span> <br />on Blockchain</h1>
                   <h4 align='center'> <Link style={{color:"#fff"}} target="_blank" href="https://docs.bitcoincomputer.io/" >With BitcoinComputer.io </Link></h4>
                   <img src="https://www.cleveroad.com/images/article-previews/smart-contract-1.png" width="50%" />
                 </div>
               </Grid>
               <Grid item xs={12} md={6} align='center'>
-                <HomeCard image_url="https://www.thebedfordcitizen.org/wp-content/uploads/2020/06/vote-464x464-1.png" headText='Voting'></HomeCard>
+                <HomeCard image_url="https://www.thebedfordcitizen.org/wp-content/uploads/2020/06/vote-464x464-1.png" 
+                linkText=""
+                link_path="/elections/vote"
+                headText='Vote Now!'></HomeCard>
               </Grid>
               <Grid item md={12} style={{marginTop:"10px"}}>
-              <iframe src="https://verify.vote.org/?partner=111111&campaign=free-tools" width="100%" height="900" marginheight="0" frameborder="0" id="frame1" scrollable ="no"></iframe>
+              <iframe src="https://verify.vote.org/?partner=111111&campaign=free-tools" width="100%" height="900" marginHeight="0" frameBorder="0" id="frame1" scrollable ="no"></iframe>
               <ScriptTag isHydrating={true} type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.3/iframeResizer.min.js"></ScriptTag>
               {/* <script type="text/javascript">
                 iFrameResize({ log:true, checkOrigin:false});
