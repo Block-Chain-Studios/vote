@@ -23,7 +23,7 @@ export default function Home() {
               <Grid item md={6} xs={12}  align='center'>
                 <div>
                   <h1 align='center'> <span className="script big-head" > Wyoming Vote </span> <br />on Bitcoin.</h1>
-                  <h4 align='center'> <Link style={{color:"#fff"}} href="www.bitcoincomputer.io" >With BitcoinComputer.io </Link></h4>
+                  <h4 align='center'> <Link style={{color:"#fff"}} target="_blank" href="https://docs.bitcoincomputer.io/" >With BitcoinComputer.io </Link></h4>
                   <img src="https://www.cleveroad.com/images/article-previews/smart-contract-1.png" width="50%" />
                 </div>
               </Grid>
