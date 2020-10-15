@@ -15,8 +15,8 @@ export default function Home() {
               <script type="text/javascript" src="/vip.js"></script>
             </Helmet> */}
               <Grid item md={6}>
-                <Button href="https://sos.wyo.gov/elections/state/registeringtovote.aspx">Register to Vote</Button>
-                <Button href="https://sos.wyo.gov/faqs.aspx?root=ELEC">Election FAQs</Button>
+                <Button href="https://sos.wyo.gov/elections/state/registeringtovote.aspx" target="_blank">Register to Vote</Button>
+                <Button href="https://sos.wyo.gov/faqs.aspx?root=ELEC" target="_blank">Election FAQs</Button>
                 {/* <Button href="">Am I registered?</Button> */}
               </Grid>
               <Grid container style={{paddingTop: "50px", paddingBottom: "100px", backgroundColor:"#000", color:"#fff"}} >
