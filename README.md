@@ -1,74 +1,62 @@
 
-# bitcoin-computer-react-base
-Create React App + React Router + Bitcoin Computer + Material UI 
+# E-voting on a blockchain: an implementation using the Bitcoin Protocol
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The site is hosted at https://vote-eta.vercel.app/
 
-## Available Scripts
+The goals of this project
+* Implement electronic voting using the Bitcoin Protocol using Smart Contracts
+* Compare implementation costs
+* Investigate the issues surrounding e-voting to make it secure, auditable, confidential and therefore trusted.
 
-In the project directory, you can run:
+# What was accomplished
+* A voting site was created using the BitcoinSV blockchain 
+  - Links to help citizens find information on votings and voter registration status
+  - Election creation and maintaining a voter list
+  - Distribute vote tokens to registered voters
+  - Sample screen where voter would cast ballot
+  - Vote results tabulation
+  
+ * A smart contract for voting was created to run on the Bitcoin Protocol
+ 
+ * A cost comparison was performed to ascertain the lowest cost chain
+ 
+ * Research was performed to transition the implementation from a "naive" approach to a more robust implementation.
+ 
+ # Future Directions for Blockchain voting
+ 
+ E-voting System Based on the Bitcoin Protocol
+and Blind Signatures
+https://ipsj.ixsq.nii.ac.jp/ej/?action=repository_action_common_download&item_id=157919&item_no=1&attribute_id=1&file_no=1
 
-### `yarn start`
+Bitcoin is a public blockchain that does not use encryption at the base layer. Voting requires privacy and confidentiality. Confidential voting can be layered on top of Bitcoin using cryptographic primatives. There are at least three available approaches that could extend Bitcoin with privacy:
+1) Blind Signatures with bit commitment
+2) Zero Knowledge proof with oblivious transfer
+3) Homomorphic encryption
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The approach that was most deeply investigated was Blind Signatures based on the classic David Chaum work. Zero Knowledge Proof and Homomorphic encryption seemed to be probablistic in nature and therefore were more compute intensive. Additional confidentiality schemes can be investigated further.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+* Completeness: An eligible voter is always accepted by the administrator
+and all valid votes are counted correctly.
 
-### `yarn test`
+* Robustness/Soundness: Dishonest voters and other participants
+cannot disturb/disrupt an election.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* Anonymity/Privacy: All votes must be secret; and neither voting
+authorities nor anyone else can link a vote to the voter who
+has cast a vote.
 
-### `yarn build`
+* Unreusability: A voter cannot vote more than once.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Fairness: Early results should not be obtained, as they could
+influence the remaining voters.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+* Eligibility: Only legitimate voters can vote.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* Individual verifiability: A voter can verify that his/her vote
+was really counted.
 
-### `yarn eject`
+* Universal verifiability: Anybody can verify that the published
+outcome really is the sum of all votes.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
-
+The time constrains of the Hackathon did not permit the full implementation of all these attributes. However, the research strongly suggests that these desirable attributes are able to be fully implemented on top of the Bitcoin Protocol.
 
