@@ -45,6 +45,7 @@ export default function App() {
     },
     link: {
       margin: theme.spacing(1, 1.5),
+      width: 180
     },
     whiteLink:{color: '#fff', outlineColor:'#fffff'},
     heroContent: {
