@@ -42,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
     }
   }))
 
+const chain = "BSV"
+
 // option = distribute, when election official distributes votes
 // option = vote, when voter votes
 function VoteWallet({option, voter, votes, computer, publicKey, rev}){
@@ -49,6 +51,7 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
     const [election] = votes || [{name:"invalid"}]
     const [votePublicKey, setVotePublicKey] = useState('')
     const [voteObjs, setVoteObjs] = useState(null)
+    const [voterState, setVoterState] = useState(voter)
     // computer object for the voter
     // const [computerVoter, setComputerVoter] = useState(null)
 
@@ -69,7 +72,7 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
 
     const loadVoterComputer = async () => {
         if (option == 'distribute') return null
-        const password = voter.seed
+        const password = voterState.seed
         const chain = "BSV"
         const vcomputer = new Computer({ chain: chain, network: 'testnet', seed: password, path: Constants.ELECTION_PATH })
         console.log(`Bitcoin|Computer created on ${chain}`)
@@ -89,7 +92,7 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
       //loadVoterComputer()
       // console.log(option)
       console.log(election)
-      console.log(voter)
+      console.log(voterState)
       // console.log(voteObjs)
       // if (votes && votes.length>0) {
       //   console.log(votes)
@@ -128,9 +131,10 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
     }
 
     const candidate1Click = async (e) =>{
-      const password = voter.seed
-      const chain = "BSV"
-      const vcomputer = new Computer({ chain: chain, network: 'testnet', seed: password, path: Constants.ELECTION_PATH })
+      const password = voterState.seed
+      const vcomputer = new Computer({ 
+        chain: chain, network: 'testnet', 
+        seed: password })
       console.log(`Bitcoin|Computer created on ${chain}`)
       const pubKey = vcomputer.db.wallet.getPublicKey().toString()
       setVotePublicKey(pubKey)
@@ -142,16 +146,17 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
       //   alert(`No vote object exists`)
       //   return
       // }
-      let currentVote = await vcomputer.sync(voter.votetx._rev)
+      let currentVote = await vcomputer.sync(voterState.votetx._rev)
       console.log(currentVote)
       // owner must be voter
       console.log(currentVote._owners[0])
-      console.log(voter.key.public)
+      console.log(voterState.key.public)
       try{
-        //await objs[0].voteA(publicKey)
         let tx = await currentVote.voteA()
         console.log(tx)
-        //TODO: save to localStorage
+        voterState.votedfor = "CANDIDATE 1"
+        updateVoterVote(voterState)
+        setVoterState(voterState)
       }catch(err){
         console.error(err)
         alert(err)
@@ -159,23 +164,44 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
     }
 
     const candidate2Click = async (e) =>{
-      if (!voteObjs) {
-        alert(`No vote object exists`)
-        return
-      }
+      const password = voterState.seed
+      const vcomputer = new Computer({ 
+        chain: chain, network: 'testnet', 
+        seed: password })
+      console.log(`Bitcoin|Computer created on ${chain}`)
+      const pubKey = vcomputer.db.wallet.getPublicKey().toString()
+      setVotePublicKey(pubKey)
+      console.log(pubKey)
+      let currentVote = await vcomputer.sync(voterState.votetx._rev)
+      console.log(currentVote)
+      // owner must be voter
+      console.log(currentVote._owners[0])
+      console.log(voterState.key.public)
       try{
-        let tx = await voteObjs[0].voteB()
+        let tx = await currentVote.voteB()
         console.log(tx)
+        voterState.votedfor = "CANDIDATE 2"
+        updateVoterVote(voterState)
+        setVoterState(voterState)
       }catch(err){
-        console.log(err)
+        console.error(err)
         alert(err)
       }
   }
 
-    // const candidate3Click = async (e) =>{
-    //   let tx = await first.voteC(publicKey)
-    //   console.log(tx)
-    // }
+  const saveVoters = (voters) => {
+    localStorage.setItem(Constants.VOTERS,JSON.stringify(voters))
+  }
+
+  const updateVoterVote = (voter) => {
+    const voters = getVoters()
+    for (let i = 0; i< voters.length; i++) {
+      if (voter.name === voters[i].name) {
+        voters[i].votedfor = voter.votedfor
+      }
+    }
+    saveVoters()
+  }
 
    const history = useHistory()
    //votes && votes.length>0 && votes[0].distributor === publicKey
@@ -192,7 +218,7 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
                           </>
                           )
                           :(<>
-                          <Typography variant="body1" control="p">{voter.name}</Typography>
+                          <Typography variant="body1" control="p">{voterState.name}</Typography>
                           <Typography variant="h6" control="p">{findVoteInThisElection() ?findVoteInThisElection().votes:'UNK'} uncast votes</Typography>
                           <Typography variant="body1" control="p">{findVoteInThisElection()?findVoteInThisElection()._id:'UNK'}</Typography>
                           </>
@@ -208,20 +234,19 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
                             <SendVote votes={votes} computer={computer} voter={getFirstVoter()} />
                           </div>
                         ) : (
-                          <div>
+                          voterState.votedfor ? <div>Already Voted</div>
+                          : <div>
                             <div> Cast Your Vote For: </div>
                             <Grid container> 
-                              <Grid item xs={12} md={4}>
+                              <Grid item xs={12} md={6}>
                                 <Button onClick={candidate1Click} > {election?election.can1name:'UNK Candidate 1'}</Button> 
                               </Grid>
-                              <Grid item xs={12} md={4}>
+                              <Grid item xs={12} md={6}>
                                 <Button  onClick={candidate2Click}> {election?election.can2name:'UNK Candidate 2'} </Button>
                               </Grid>
-                              {/* <Grid item xs={12} md={4}>
-                                <Button  onClick={candidate3Click}> {first.can3name} </Button>
-                              </Grid> */}
                             </Grid>
                           </div>
+
                         )
                       } 
                     </Grid>

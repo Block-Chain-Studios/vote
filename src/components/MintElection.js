@@ -53,7 +53,7 @@ function MintElection({computer}){
     // const [can3PK, setCan3PK] = useState('')
  
     const handleSubmit = async (e) => {
-      if (!can1PK || !can2PK) return
+      if (!can1PK || !can2PK || !title) return
         setCreating(true)
         try{
             e.preventDefault()

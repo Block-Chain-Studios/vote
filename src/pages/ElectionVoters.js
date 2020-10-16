@@ -24,6 +24,7 @@ export default function ElectionVoters() {
         const newVoter = {
             name: name || nameInput.current.value,
             seed: mn.toString(),
+            address: computer.db.wallet.getAddress().toString(),
             key:{
                 private:computer.db.wallet.getPrivateKey().toString(),
                 public:computer.db.wallet.getPublicKey().toString()
@@ -71,7 +72,7 @@ export default function ElectionVoters() {
         return getVoters().map(v => {
             const key = v.key.public
             return (
-            <li key={`${key}`}>{`${v.name} (${v.key.public})`} <Button onClick={() => deleteVoter(key)}>Delete</Button></li>
+            <li key={`${key}`}>{`${v.name} (${v.key.public},${v.address})`} <Button onClick={() => deleteVoter(key)}>Delete</Button></li>
             )
         })
     }

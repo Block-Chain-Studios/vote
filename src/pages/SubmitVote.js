@@ -85,7 +85,7 @@ export default function SubmitVote() {
                     </div>
                 </div>
                 <div>
-                    <div>{getVoters().length} Voters</div>
+                    <div>{getVoters().length} Votes uncast</div>
                     <div>
                         {renderVoters()}
                     </div>

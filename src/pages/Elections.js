@@ -84,6 +84,18 @@ function Elections({_objects})
       delete voters[i].votetx 
     }
     saveVoters(voters)
+    const c1_raw = localStorage.getItem(Constants.CANDIDATE1)
+    if (c1_raw) {
+      const c1 = JSON.parse(c1_raw)
+      c1.totalvotes = 0
+      localStorage.setItem(Constants.CANDIDATE1,JSON.stringify(c1))
+    }
+    const c2_raw = localStorage.getItem(Constants.CANDIDATE2)
+    if (c2_raw) {
+      const c2 = JSON.parse(c2_raw)
+      c2.totalvotes = 0
+      localStorage.setItem(Constants.CANDIDATE2,JSON.stringify(c2))
+    }
   }
   
   const saveVoters = (voters) => {
