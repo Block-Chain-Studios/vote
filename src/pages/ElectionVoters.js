@@ -68,11 +68,40 @@ export default function ElectionVoters() {
         saveVoters(voters)
     }
 
+    const sendVoter = async (key) => {
+        console.log(`SEND ${key}`)
+        const voters = getVoters()
+        for(let i=0; i< voters.length; i++) {
+            if (voters[i].key.public === key) {
+                const computer = new Computer({
+                    seed: localStorage.getItem(Constants.SEED),
+                    chain: "BSV", 
+                    network: "testnet"
+                  })
+                const {db } = computer 
+                const { wallet } = db
+                 const address = wallet.getAddress()
+                 const sendTo = voters[i].address
+                 const addressString = address.toString()
+                 console.log(addressString)
+                 const pubKey =  wallet.getPublicKey()
+                 const revs = await computer.getRevs(pubKey)
+                 console.log(revs)
+                 console.log("Computer Initialized for Revisions of Contract or Token Type <>")
+                 let result = await computer.db.wallet.send(10000, sendTo)
+                 alert(`10000 Satoshis Sent To \n ${sendTo} \n Transaction ID: \n ${result}`)
+            }
+        }
+    }
+
     const renderVoters = () => {
         return getVoters().map(v => {
             const key = v.key.public
             return (
-            <li key={`${key}`}>{`${v.name} (${v.key.public},${v.address})`} <Button onClick={() => deleteVoter(key)}>Delete</Button></li>
+            <li key={`${key}`}>{`${v.name} (${v.key.public},${v.address})`} 
+            <Button onClick={() => deleteVoter(key)}>Delete</Button>
+            <Button onClick={() => sendVoter(key)}>Send</Button>
+            </li>
             )
         })
     }
