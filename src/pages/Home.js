@@ -15,7 +15,9 @@ export default function Home() {
               <script type="text/javascript" src="/vip.js"></script>
             </Helmet> */}
               <Grid item md={6}>
-                <Button href="https://sos.wyo.gov/elections/state/registeringtovote.aspx" target="_blank">Register to Vote</Button>
+                <Button href="https://bcstudios.us/voting_booth" target="_blank">Voting Booth</Button>
+                <Button href="https://bcstudios.us/voting_booth_register" target="_blank">Register to Vote</Button>
+                <Button href="https://bcstudios.us/voting_booth_results" target="_blank">Vote Results</Button>
                 <Button href="https://sos.wyo.gov/faqs.aspx?root=ELEC" target="_blank">Election FAQs</Button>
                 {/* <Button href="">Am I registered?</Button> */}
               </Grid>
@@ -24,7 +26,9 @@ export default function Home() {
                 <div>
                   <h1 align='center'> <span className="script big-head" > Wyoming Vote </span> <br />on Blockchain</h1>
                   <h4 align='center'> <Link style={{color:"#fff"}} target="_blank" href="https://docs.bitcoincomputer.io/" >With BitcoinComputer.io </Link></h4>
-                  <img src="https://www.cleveroad.com/images/article-previews/smart-contract-1.png" width="50%" />
+                  <a href="https://docs.bitcoincomputer.io/" target="_blank">
+                    <img src="https://www.cleveroad.com/images/article-previews/smart-contract-1.png" width="50%" />
+                  </a>
                 </div>
               </Grid>
               <Grid item xs={12} md={6} align='center'>

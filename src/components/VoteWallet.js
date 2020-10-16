@@ -144,12 +144,18 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
       // }
       let currentVote = await vcomputer.sync(voter.votetx._rev)
       console.log(currentVote)
+      // owner must be voter
+      console.log(currentVote._owners[0])
+      console.log(voter.key.public)
       try{
         //await objs[0].voteA(publicKey)
-        let tx = currentVote.voteA(election.cand1PK)
+        let tx = await currentVote.voteA()
         console.log(tx)
         //TODO: save to localStorage
-      }catch(err){alert(err)}
+      }catch(err){
+        console.error(err)
+        alert(err)
+      }
     }
 
     const candidate2Click = async (e) =>{
@@ -158,9 +164,12 @@ function VoteWallet({option, voter, votes, computer, publicKey, rev}){
         return
       }
       try{
-        let tx = await voteObjs[0].voteB(publicKey)
+        let tx = await voteObjs[0].voteB()
         console.log(tx)
-      }catch(err){alert(err)}
+      }catch(err){
+        console.log(err)
+        alert(err)
+      }
   }
 
     // const candidate3Click = async (e) =>{
