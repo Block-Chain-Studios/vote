@@ -5,7 +5,7 @@ The site is hosted at https://vote-eta.vercel.app/
 
 The goals of this project
 * Implement electronic voting using the Bitcoin Protocol using Smart Contracts
-* Compare implementation costs
+* Compare implementation costs (mining fees) across the various bitcoin blockchains.
 * Investigate the issues surrounding e-voting to make it secure, auditable, confidential and therefore trusted.
 
 # What was accomplished
@@ -24,8 +24,7 @@ The goals of this project
  
  # Future Directions for Blockchain voting
  
- E-voting System Based on the Bitcoin Protocol
-and Blind Signatures
+E-voting System Based on the Bitcoin Protocol and Blind Signatures  
 https://ipsj.ixsq.nii.ac.jp/ej/?action=repository_action_common_download&item_id=157919&item_no=1&attribute_id=1&file_no=1
 
 Bitcoin is a public blockchain that does not use encryption at the base layer. Voting requires privacy and confidentiality. Confidential voting can be layered on top of Bitcoin using cryptographic primatives. There are at least three available approaches that could extend Bitcoin with privacy:
