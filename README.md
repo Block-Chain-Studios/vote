@@ -22,8 +22,10 @@ The goals of this project
  
  * Research was performed to transition the implementation from a "naive" approach to a more robust implementation.
  
- # Future Directions for Blockchain voting
- 
+# Future Directions for Blockchain voting
+
+The project was implmented with an eye toward a fully secure and private voting mechanism as presented in the following research paper.
+
 E-voting System Based on the Bitcoin Protocol and Blind Signatures  
 https://ipsj.ixsq.nii.ac.jp/ej/?action=repository_action_common_download&item_id=157919&item_no=1&attribute_id=1&file_no=1
 
